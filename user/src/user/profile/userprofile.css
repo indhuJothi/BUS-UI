@@ -1,0 +1,58 @@
+.profilelogo {
+  width: 40px;
+  position: relative;
+
+}
+
+.profile {
+  margin: 90px 430px;
+  width: 500px;
+  position: absolute;
+  background-color: honeydew;
+  text-align: center;
+  height: fit-content;
+  justify-content: center;
+}
+
+.profiledetails {
+  position: relative;
+  width: 350px;
+  margin: 10px 100px;
+  text-align: center;
+  justify-self: center;
+}
+
+.profileinfo {
+  position: relative;
+  display: block;
+  padding-left: 10px;
+}
+.updatedetails {
+  position: relative;
+  padding-top: 30px;
+  width: 300px;
+  margin-top: 10px;
+  margin-left: 50px;
+  text-align: center;
+  justify-content: center;
+}
+
+.inputdetail {
+  outline: none;
+  position: relative;
+  margin-left:70px;
+  text-align: center;
+  justify-content: center;
+
+  width: 3px;
+}
+
+.inputbutton {
+  font-size: 13px;
+  font-weight: bold;
+  margin: 5px 160px;
+  text-align: center;
+  justify-content: center;
+  width: 100px;
+  cursor: pointer;
+}

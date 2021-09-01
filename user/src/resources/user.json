@@ -1,0 +1,28 @@
+{
+  "user": [
+    {
+      "email": "indhu99.p@gmail.com",
+      "mobile": 7339467878,
+      "password": "indhu@99",
+      "name": "Indhu"
+    },
+    {
+      "email": "anitha@gmail.com",
+      "mobile": 7339467979,
+      "password": "indhu@99",
+      "name": "Anitha"
+    },
+    {
+      "email": "charanya@gmail.com",
+      "mobile": 7339467879,
+      "password": "indhu@99",
+      "name": "Charanya"
+    },
+    {
+      "email": "snehapriya.com",
+      "mobile": 7339467880,
+      "password": "indhu@99",
+      "name": "Snehapriya"
+    }
+  ]
+}

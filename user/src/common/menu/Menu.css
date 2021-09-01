@@ -1,0 +1,21 @@
+.li {
+  list-style-type: none;
+}
+
+.link {
+  text-decoration: none;
+  font-size: large;
+  font-weight: bold;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+}
+
+.App {
+  height: 100%;
+  width: 160px;
+  position: fixed;
+  z-index: 1;
+  top: 55px;
+  left: 0;
+  background-color: #e6e6e6;
+  padding-top: 20px;
+}

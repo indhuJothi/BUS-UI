@@ -1,0 +1,30 @@
+.table {
+  text-align: center;
+  justify-content: center;
+  margin: 200px 345px;
+  position: absolute;
+  width: 50%;
+
+  background-color: whitesmoke;
+}
+
+.thead {
+  width: 50px;
+  height: 40px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-size: medium;
+  font-weight: bold;
+}
+
+.tbody {
+  font-size: small;
+  width: 30px;
+  align-items: center;
+  height: 50px;
+  text-align: center;
+  background-color: thistle;
+}
+
+.heading {
+  color: cadetblue;
+}

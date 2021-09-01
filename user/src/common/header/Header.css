@@ -1,0 +1,60 @@
+.body {
+  background-color: turquoise;
+  position: fixed;
+  top: 0;
+  height: 10%;
+  text-align: center;
+  justify-content: center;
+  width: 100%;
+}
+.header {
+  width: 100%;
+  margin-top: 5px;
+  position: absolute;
+  height: 55px;
+  text-align: center;
+  justify-content: center;
+  /* overflow: hidden; */
+  background-color: transparent;
+}
+.apptitle {
+  color: purple;
+  font-size: 40px;
+  font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS", sans-serif;
+  margin: 50px 50px;
+  text-align: center;
+  justify-content: center;
+  font-weight: bold;
+}
+.logobut {
+  position: relative;
+  left: 35%;
+  padding-right: 10px;
+  margin-top: 0px;
+  size: 10px;
+}
+
+.signuplogo {
+  width: auto;
+  margin: 5px 2px;
+  border-radius: 15px;
+  position: relative;
+  height: auto;
+}
+
+.username {
+  color: black;
+  size: 1px;
+  padding: 10px 10px;
+}
+
+.profile {
+  margin: 30px;
+}
+.pro {
+  color:black;
+  font-size: large;
+  font-weight: bold;
+  padding-left: 2px;
+  cursor: pointer;
+}
