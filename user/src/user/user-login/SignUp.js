@@ -4,7 +4,7 @@ import data from "../../resources/user.json";
 import { Redirect, withRouter } from "react-router-dom";
 import Header from "../../common/header/Header";
 import SweetAlert from "react-bootstrap-sweetalert";
-import axios from "axios";
+import baseURL from '../../service/api';
 
 
 class SignUp extends React.Component {
@@ -24,6 +24,7 @@ class SignUp extends React.Component {
       login: true,
       alert: null,
       redirectLogin: false,
+      userAlreadyExsist:null
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -146,9 +147,12 @@ class SignUp extends React.Component {
           <p>You can now Login</p>
         </SweetAlert>
       );
-      this.setState({
-        alert: getAlert(),
-      });
+      const userAlert = () => (
+        <SweetAlert success title="!" onConfirm={() => this.hideAlert()}>
+          User Already Exisit
+          <p>You can Login</p>
+        </SweetAlert>
+      );
       const newUser ={
         name:this.state.userName,
         email:this.state.email,
@@ -157,13 +161,22 @@ class SignUp extends React.Component {
         }
        console.log(this.state.password)
         this.registerUser(newUser)
-        .then(response => response.data)
-         console.log(newUser)
-         if(data){
-           console.log(data)
-        //  const {history}=this.props
-        //  history.push('/login')
+        .then(response =>{
+              if(response.data=="User alredy exsit..")
+          {
+            console.log(response.data)
+            this.setState({
+              alert:null,
+              userAlreadyExsist:userAlert()
+            })
          }
+         else{
+          this.setState({
+            alert: getAlert(),
+          });
+
+         }
+        })
     }
   }
   hideAlert() {
@@ -171,14 +184,13 @@ class SignUp extends React.Component {
       alert: null,
       login:false
     });
-    //  const {history}=this.props
-    //      history.push('/login')
+   
   }
 
 
   registerUser(newUserDetails){
     let apiUrl = 'http://localhost:5000/users/register'
-    return axios.post(apiUrl,newUserDetails,{
+    return baseURL.post(apiUrl,newUserDetails,{
         headers:{
             'Content-Type': 'application/json'
         }
@@ -189,6 +201,7 @@ class SignUp extends React.Component {
     return (
       <div>
         <Header />
+       
         <form onSubmit={this.handleSubmit}>
           <div className="base-container">
             <div class="MainContainer center">
@@ -201,11 +214,12 @@ class SignUp extends React.Component {
               <div className="formheader">Signup</div>
               <div className="form">
                 <div>
+                <p class="error">{this.state.userAlreadyExsist}</p>
                   <label htmlFor="email">User Name</label>
                   <input
                     type="text"
                     name="userName"
-                    placeholder="userName"
+                    placeholder="User Name"
                     onChange={this.handleChange}
                   />
                   <div class="error">{this.state.userNameErr}</div>

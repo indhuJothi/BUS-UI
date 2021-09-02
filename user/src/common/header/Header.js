@@ -1,14 +1,9 @@
 import React from "react";
-import { useState } from "react";
-import { useHistory } from "react-router";
 import "./Header.css";
-import { userAuthenticated } from "../../api";
+import { userAuthenticated } from "../../service/api";
 import { Redirect, withRouter } from "react-router-dom";
 class Header extends React.Component {
-  // const history = useHistory();
-  // const [profile, setprofile] = useState(false);
 
-  // const userData = props.userData
   constructor(props)
   {
     super(props)

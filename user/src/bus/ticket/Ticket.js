@@ -5,6 +5,7 @@ import "./Ticket.css";
 import { withRouter } from "react-router-dom";
 import Header from "../../common/header/Header";
 import userdata from '../../resources/userhistory.json'
+import { userAuthenticated } from "../../service/api";
 
 
 
@@ -13,7 +14,8 @@ class Ticket extends React.Component {
   constructor() {
     super();
     {
-      this.state = { isbool: true };
+      this.state = { isbool: true,
+                     userData:[] };
     }
     this.submit = this.submit.bind(this);
     this.goBack = this.goBack.bind(this);
@@ -26,15 +28,15 @@ class Ticket extends React.Component {
     busDetails.NoOfSeats =busDetails.NoOfSeats - sessionStorage.getItem("seatcount");
     bushistoryPushDetails = {
       id: searchDetails.id,
-      mobile: sessionStorage.getItem("mobile"),
+      mobile: this.state.userData.mobile,
       userId: searchDetails.userid,
       busno: busDetails.busno,
       busname: busDetails.busname,
       totalfare: sessionStorage.getItem("seatcount") * busDetails.fare,
       numberofseats: sessionStorage.getItem("seatcount"),
       date: searchDetails.date,
-      from: searchDetails.from,
-      to: searchDetails.to,
+      from: busDetails.from,
+      to: busDetails.to,
     };
     bushistory.userbusbooking.push(bushistoryPushDetails);
     let setReservedseats = JSON.parse(sessionStorage.getItem("seats"));
@@ -42,7 +44,7 @@ class Ticket extends React.Component {
     userpushDetails = {
       userbusbookingid: searchDetails.id,
       name:passengerName ,
-      mobile: sessionStorage.getItem("mobile")
+      mobile: this.state.userData.mobile
     };
     userdata.buspassanger.push(userpushDetails)
     this.setState({
@@ -55,6 +57,14 @@ class Ticket extends React.Component {
     this.props.history.goBack();
   }
 
+   componentDidMount(){
+    userAuthenticated().then((response)=>{
+      this.setState({
+        userData:response.data
+      })
+      
+   })
+   }
   render() {
     let passenger;
     let busDetails = JSON.parse(sessionStorage.getItem("busdetails"));
@@ -86,7 +96,7 @@ class Ticket extends React.Component {
           </label>
           <br></br>
           <label class="info">
-            Mobile:<span class="info1">{sessionStorage.getItem("mobile")}</span>
+            Mobile:<span class="info1">{this.state.userData.mobile}</span>
           </label>
           <br></br>
           <label class="info">
@@ -105,11 +115,11 @@ class Ticket extends React.Component {
           </label>
           <br></br>
           <label class="info">
-            From:<span class="info1">{searchDetails.from}</span>
+            From:<span class="info1">{busDetails.from}</span>
           </label>
           <br></br>
           <label class="info">
-            To:<span class="info1">{searchDetails.to}</span>
+            To:<span class="info1">{busDetails.to}</span>
           </label>
           <br></br>
           <label class="info">

@@ -3,7 +3,8 @@ const userSchema = new mongoose.Schema({
     name : String,
     email:String,
     mobile:Number,
-    password:String
+    password:String,
+    busDetails:[]
 })
 
 const postUser =mongoose.model('postUser',userSchema)

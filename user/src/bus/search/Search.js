@@ -7,7 +7,6 @@ import { getBusdetails } from "../../service/service";
 import Swal from "sweetalert2";
 import { userContext } from "../../context/Context";
 import Menu from "../../common/menu/Menu";
-import { userAuthenticated } from "../../api";
 import axios from 'axios'
 
 
@@ -156,17 +155,18 @@ class Search extends React.Component {
 
     let storedSearchdetails, from, to, dateval;
    
-    if (localStorage.getItem("searchdetails")) {
-      storedSearchdetails = JSON.parse(localStorage.getItem("searchdetails"));
+    if (sessionStorage.getItem("searchdetails")) {
+      storedSearchdetails = JSON.parse(sessionStorage.getItem("searchdetails"));
       from = storedSearchdetails.from;
       to = storedSearchdetails.to;
       dateval = storedSearchdetails.date;
+      this.setState({
+        value:from,
+        tovalue:to,
+        dateVal:dateval
+      })
     }
-    this.setState({
-      value:from,
-      tovalue:to,
-      dateVal:dateval
-    })
+  
    
   }
 
@@ -214,9 +214,9 @@ class Search extends React.Component {
       type: type,
       button: button,
     };
-    if (localStorage.getItem("searchdetails")) {
-      storedDetails = JSON.parse(localStorage.getItem("searchdetails"));
-    }
+    // if (localStorage.getItem("searchdetails")) {
+    //   storedDetails = JSON.parse(localStorage.getItem("searchdetails"));
+    // }
     toVal = toList.filter((value) => {
       return value !== this.state.value;
     });

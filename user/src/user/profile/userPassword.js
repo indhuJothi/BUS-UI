@@ -5,21 +5,22 @@ import Menu from "../../common/menu/Menu";
 import "./userprofile.css";
 import data from "../../resources/user.json";
 import SweetAlert from "react-bootstrap-sweetalert";
-import { userAuthenticated } from "../../api";
-import axios from 'axios'
+import { userAuthenticated } from "../../service/api";
+import axios from "axios";
 
 class ChangePassword extends React.Component {
   constructor(props) {
     super(props);
     {
       this.state = {
-        prevPassword: sessionStorage.getItem("password"),
+        prevPassword: "",
         currentPassword: "",
         rePassword: "",
         alert: null,
         update: false,
         passErr: "",
-        userData:[]
+        prevPassErr:"",
+        userData: [],
       };
     }
     this.updatePassword = this.updatePassword.bind(this);
@@ -45,29 +46,41 @@ class ChangePassword extends React.Component {
         passErr: "Password are not same",
         alert: null,
       });
-   
-     
     } else {
-      if (this.state.currentPassword === "" && this.state.rePassword ==="") {
+      if (this.state.currentPassword === "" && this.state.rePassword === "") {
         this.setState({
           alert: null,
           passErr: "Please Enter a Password To Update",
         });
       } else if (this.state.password !== "" && this.state.rePassword !== "") {
-        this.setState({
-          update: true,
-        });
-        this.setState({
-          alert: getAlert(),
-        });
-        const data = {password:this.state.currentPassword}
-        axios.put('http://localhost:5000/users/updatepassword',data,{
-          headers:{
+      
+        const data = {
+          password: this.state.currentPassword,
+          oldPassword: this.state.prevPassword,
+        };
+        axios.put("http://localhost:5000/users/updatepassword", data, {
+          headers: {
             "Content-Type": "application/json",
-            "access-token":sessionStorage.getItem("authToken")
-          }
+            "access-token": sessionStorage.getItem("authToken"),
+          },
+        }).then((response)=>{
+             if(response.data==="error")
+             {
+               this.setState({
+                 prevPassErr:"Please provide a vaild current password",
+                 alert:null,
+                 update:false
+               })
+             }
+             else{
+              this.setState({
+                update: true,
+                prevPassErr:"",
+                alert: getAlert(),
+              });
+             
+             }
         })
-       
       }
     }
   }
@@ -79,16 +92,12 @@ class ChangePassword extends React.Component {
       alert: null,
     });
   }
-  componentDidMount()
-  {
-    userAuthenticated().then((response)=>{
+  componentDidMount() {
+    userAuthenticated().then((response) => {
       this.setState({
-        userData:response.data
-      })
-      
-   })
-  
-
+        userData: response.data,
+      });
+    });
   }
 
   render() {
@@ -101,12 +110,16 @@ class ChangePassword extends React.Component {
             <div class="profilepic">
               <img class="profilelogo" alt="logo" src={logo}></img>
               <div class="profileinfo">
+              <p class="error">{this.state.prevPassErr}</p>
                 <span class="info">
                   Old Password:
                   <input
                     type="password"
                     name="oldPassword"
-                    value={this.state.userData.password}
+                    placeholder="Old Password"
+                    onChange={(e) =>
+                      this.setState({ prevPassword: e.target.value })
+                    }
                     class="info1"
                   ></input>
                 </span>
@@ -123,6 +136,7 @@ class ChangePassword extends React.Component {
                       this.setState({ currentPassword: e.target.value })
                     }
                   />
+                 
                 </span>
                 <span class="info">
                   Re-Type New Password:
@@ -148,7 +162,6 @@ class ChangePassword extends React.Component {
                         this.state.currentPassword !== this.state.prevPassword
                       ) {
                         element.password = this.state.currentPassword;
-                      
                       }
                     }
                   })

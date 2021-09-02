@@ -9,8 +9,9 @@ import { Redirect, withRouter } from "react-router-dom";
 import { userContext } from "../../context/Context";
 import Header from "../../common/header/Header";
 import '../../common/header/Header.css'
-import axios from 'axios'
-import { userAuthenticated } from "../../api";
+import baseURL from '../../service/api'
+import Swal from "sweetalert2";
+
 
 
 
@@ -28,6 +29,7 @@ class Login extends React.Component {
       passErr: "",
       userName: "",
       userEmail: "",
+      gotoRegister:""
     };
     this.handleChange = this.handleChange.bind(this);
     this.submit = this.submit.bind(this);
@@ -105,7 +107,7 @@ class Login extends React.Component {
       .then((response) => response.data)
       .then((data) => {
         let { token } = data;
-        if(data !=="")
+        if(data !=="error" && data!=="Not found")
         {
         sessionStorage.setItem("authToken", token);
          this.setState({
@@ -115,7 +117,15 @@ class Login extends React.Component {
          })
          this.props.history.push('/search')
         }
-        else{
+        else if(data ==="Not found")
+        {
+          this.setState({
+            gotoRegister:"You don't have an account please register and then login",
+            search:false
+          })
+          
+        }
+        else {
           this.setState({
             mobileErr:"Please a valid mobile number",
             passErr:"Please enter a valid password"
@@ -123,15 +133,14 @@ class Login extends React.Component {
         }
      
         });
-         
-      
     }
   }
   loginUser(newUserDetails) {
-    let apiUrl = "http://localhost:5000/users/login";
-    return axios.post(apiUrl, newUserDetails, {
+    let apiUrl = "/users/login";
+    
+    return baseURL.post(apiUrl, newUserDetails, {
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/json"
       },
     });
   }
@@ -143,11 +152,6 @@ class Login extends React.Component {
     return (
       <div>
         <Header />
-        {/* <div class="body">
-        <div class="header">
-          <span class="apptitle">Bus Booking App</span>
-        </div>
-        </div> */}
         {sessionStorage.getItem("authToken") ?
          (
           <Redirect to="/search"></Redirect>
@@ -173,6 +177,7 @@ class Login extends React.Component {
                   Signup
                 </button>
                 <div className="formheader">Login</div>
+                <p class="error">{this.state.gotoRegister}</p>
                 <div className="form">
                   <div>
                     <label htmlFor="Mobile">Mobile</label>

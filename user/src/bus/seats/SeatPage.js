@@ -4,7 +4,7 @@ import Menu from "../../common/menu/Menu";
 import Header from '../../common/header/Header';
 import seat from   "../../resources/seat.jpg";
 import { withRouter } from "react-router";
-import { userAuthenticated } from "../../api";
+
 
 class SeatList extends React.Component {
   constructor() {
@@ -77,7 +77,7 @@ class SeatList extends React.Component {
           </button>
           {seatsLength.map((element, index) => {
             if (sessionStorage.getItem("seats")) {
-              let seatVal = JSON.parse(localStorage.getItem("seats"));
+              let seatVal = JSON.parse(sessionStorage.getItem("seats"));
               {
                 return (
                   <label class="main">

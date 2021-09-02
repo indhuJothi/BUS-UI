@@ -7,7 +7,7 @@ import {
 } from "react-router-dom";
 import "./Menu.css";
 import { withRouter } from "react-router";
-import { userAuthenticated } from "../../api";
+
 
 class Menu extends Component {
   render() {

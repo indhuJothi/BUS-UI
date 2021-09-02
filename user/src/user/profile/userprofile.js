@@ -6,7 +6,7 @@ import "./userprofile.css";
 import Menu from "../../common/menu/Menu";
 import Header from "../../common/header/Header";
 import { withRouter } from "react-router";
-import { userAuthenticated } from "../../api";
+import { userAuthenticated } from "../../service/api";
 import axios from "axios";
 
 
