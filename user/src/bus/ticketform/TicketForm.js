@@ -102,7 +102,6 @@ componentDidMount()
 }
   render() {
     let busDetails = JSON.parse(sessionStorage.getItem("busdetails"));
-    let searchDetails = JSON.parse(sessionStorage.getItem("searchdetails"));
     let amount =sessionStorage.getItem("seatcount") * busDetails.fare;
     let seats = JSON.parse(sessionStorage.getItem("seats"));
     let userhistoryjson = userhistory;

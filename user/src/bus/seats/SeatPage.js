@@ -60,8 +60,6 @@ class SeatList extends React.Component {
   render() {
     let busdocument = JSON.parse(sessionStorage.getItem("busdetails"));
     let seatsLength = [];
-    console.log(busdocument.NoOfSeats)
-  
     for (let i = 0; i <busdocument.NoOfSeats; i++) {
         
       seatsLength.push(i);

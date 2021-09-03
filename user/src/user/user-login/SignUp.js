@@ -159,12 +159,10 @@ class SignUp extends React.Component {
         mobile:this.state.mobile,
         password:this.state.password
         }
-       console.log(this.state.password)
         this.registerUser(newUser)
         .then(response =>{
               if(response.data=="User alredy exsit..")
           {
-            console.log(response.data)
             this.setState({
               alert:null,
               userAlreadyExsist:userAlert()
@@ -201,7 +199,6 @@ class SignUp extends React.Component {
     return (
       <div>
         <Header />
-       
         <form onSubmit={this.handleSubmit}>
           <div className="base-container">
             <div class="MainContainer center">

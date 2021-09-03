@@ -23,10 +23,7 @@ db.on('open', () => {
 })
 
 app.use(cors())
-app.get('/',(req,res)=>{
-    res.send("Hello")
-    console.log(req.params.id)
-})
+
 app.use('/users',routes)
 
 app.listen('5000',()=>{

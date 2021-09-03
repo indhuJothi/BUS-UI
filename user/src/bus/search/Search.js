@@ -7,8 +7,8 @@ import { getBusdetails } from "../../service/service";
 import Swal from "sweetalert2";
 import { userContext } from "../../context/Context";
 import Menu from "../../common/menu/Menu";
+import baseURL from "../../service/api";
 import axios from 'axios'
-
 
 class Search extends React.Component {
   static contextType = userContext;
@@ -18,11 +18,11 @@ class Search extends React.Component {
       visible: false,
       value: "",
       tovalue: "",
-      dateVal:"",
+      dateVal: "",
       button: false,
       showsearch: true,
-      busData:[]
-      
+      busData: [],
+      fromData:[]
     };
     this.showSource = this.showSource.bind(this);
     this.ShowtoValue = this.ShowtoValue.bind(this);
@@ -116,113 +116,93 @@ class Search extends React.Component {
       this.setState({
         showsearch: false,
       });
-      let searchDetails={
-        from : this.state.value,
-        to:this.state.tovalue
-      }
-    
-    this.search(searchDetails)
-    .then((response) => response.data)
-    .then((data) => {
-      let { token } = data;
-      sessionStorage.setItem("busDetails", JSON.stringify(data));
-      sessionStorage.setItem("date",this.state.dateVal)
-      console.log(data)
-      if(sessionStorage.getItem("busDetails"))
-      {
-        console.log("stored")
-        console.log(data)
-        this.setState({
-          busData:data,
-          button:true,
-          
-        })
-      }
-      });
+      let searchDetails = {
+        from: this.state.value,
+        to: this.state.tovalue,
+      };
+
+      this.search(searchDetails)
+        .then((response) => response.data)
+        .then((data) => {
+          let { token } = data;
+          sessionStorage.setItem("busDetails", JSON.stringify(data));
+          sessionStorage.setItem("date", this.state.dateVal);
+          if (sessionStorage.getItem("busDetails")) {
+            this.setState({
+              busData: data,
+              button: true,
+            });
+          }
+        });
     }
   }
 
   search(searchDetails) {
     let apiUrl = "http://localhost:5000/users/search";
-    return axios.post(apiUrl,searchDetails, {
+    return axios.post(apiUrl, searchDetails, {
       headers: {
         "Content-Type": "application/json",
       },
     });
   }
-  componentDidMount()
-  {
-
+  componentDidMount() {
     let storedSearchdetails, from, to, dateval;
-   
-    if (sessionStorage.getItem("searchdetails")) {
-      storedSearchdetails = JSON.parse(sessionStorage.getItem("searchdetails"));
+    if (sessionStorage.getItem("busdetails")) {
+      storedSearchdetails = JSON.parse(sessionStorage.getItem("busdetails"));
       from = storedSearchdetails.from;
       to = storedSearchdetails.to;
       dateval = storedSearchdetails.date;
       this.setState({
-        value:from,
-        tovalue:to,
-        dateVal:dateval
-      })
+        value: from,
+        tovalue: to,
+        dateVal: dateval,
+      });
     }
-  
-   
+
+    baseURL.get('/users/getcities',{
+      headers:{
+        "Content-Type":"application/json",
+        "access-token":sessionStorage.getItem("authToken")
+      }
+    }).then(response=>{
+      console.log(response)
+      console.log(response.data)
+      this.setState({
+        fromData:response.data
+      })
+      console.log(this.state.fromData)
+    })
+    
   }
 
-
   render() {
+    let from=[" "]
+    this.state.fromData.map((elem)=>{
     
-    const toList = [" ", "Chennai", "Madurai", "Trichy"];
-    let prevId, prevuserId, searchDetails, busDetails, getBusdata, id, userId;
-    let seats, busNo, fare, busName, from, to, type, button;
+      from.push(elem.city)
+    })
+    const toList = from;
+    let busDetails;
     let toVal;
-    let storedDetails;
-    bushistoryjson.userbusbooking.filter((element) => {
-      prevId = parseInt(element.id);
-      prevuserId = element.userid;
-    });
-    getBusdata = [getBusdetails(this.state.value, this.state.tovalue)];
-    id = prevId + 1;
-    userId = prevuserId + 1;
-    searchDetails = {
-      from: this.state.value,
-      to: this.state.tovalue,
-      date: this.state.dateVal,
-      id: id,
-      userid: userId,
-    };
-    getBusdata.filter(function (element) {
-      seats = element.NoOfSeats;
-      busNo = element.busno;
-      fare = element.fare;
-      busName = element.busname;
-      type = element.type;
-      from = element.from;
-      to = element.to;
-      button = element.button;
-      return getBusdata;
-    });
+    let data = this.state.busData;
     busDetails = {
-      NoOfSeats: seats,
-      busno: busNo,
-      fare: fare,
-      busname: busName,
-      from: from,
-      to: to,
+      NoOfSeats: data.NoOfSeats,
+      busno: data.busno,
+      fare: data.fare,
+      busname: data.busname,
+      from: data.from,
+      to: data.to,
       date: this.state.dateVal,
-      type: type,
-      button: button,
+      type: data.type,
+      button: data.button,
     };
-    // if (localStorage.getItem("searchdetails")) {
-    //   storedDetails = JSON.parse(localStorage.getItem("searchdetails"));
-    // }
+
     toVal = toList.filter((value) => {
       return value !== this.state.value;
     });
     return (
       <div>
-       <Header/>
+        <Header />
         <Menu />
         <div class="searchContainer">
           <div class="FromCol">
@@ -234,10 +214,9 @@ class Search extends React.Component {
                 value={this.state.value}
                 onChange={this.showSource}
               >
-                <option value="">{""}</option>
-                <option value="Chennai">Chennai</option>
-                <option value="Madurai">Madurai</option>
-                <option value="Trichy">Trichy</option>
+                  {from.map((from) => (
+                  <option value={from.value}> {from === "" ? "" : from}</option>
+                ))}
               </select>
             </label>
             <label>
@@ -269,12 +248,12 @@ class Search extends React.Component {
           </div>
         </div>
 
-        {this.state.button &&
-          sessionStorage.setItem("searchdetails", JSON.stringify(searchDetails))}
-        {this.state.button && <TableData busData={this.state.busData}/>}
+        {this.state.button && <TableData busData={this.state.busData} />}
         {this.state.button &&
           sessionStorage.setItem("busdetails", JSON.stringify(busDetails))}
-        {sessionStorage.getItem("searchdetails") ? <TableData busData={this.state.busData}/> : null}
+        {sessionStorage.getItem("busdetails") ? (
+          <TableData busData={this.state.busData} />
+        ) : null}
       </div>
     );
   }

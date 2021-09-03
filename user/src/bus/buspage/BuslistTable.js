@@ -4,7 +4,6 @@ import "./BuslistTable.css";
 import Menu from "../../common/menu/Menu";
 import { withRouter } from "react-router";
 
-
 let storedBusdata;
 let getBusdata;
 let columns = [
@@ -56,57 +55,52 @@ class TableData extends Component {
     }
   }
 
-
   render() {
     let busdatas = JSON.parse(sessionStorage.getItem("busDetails"));
     let bookTicket = this.bookTicket;
-    let busData = this.props.busData
-    console.log(busdatas)
-    console.log(busData)
-    if (sessionStorage.getItem("busDetails")) {
-      storedBusdata =JSON.parse(sessionStorage.getItem("busDetails"));
-      console.log(storedBusdata)
-    storedBusdata.map(elem=>{
-      console.log(elem)
-    
-      getBusdata = [
-        {
-          from: elem.from,
-          to: elem.to,
-          busno: elem.busno,
-          busname: elem.busname,
-          fare: elem.fare,
-          type:elem.type,
-          NoOfSeats: elem.NoOfSeats,
-          button: elem.button,
-        },
-      ];
-    })
-    } else {
-      getBusdata = [
-        {
-          from: busData.from,
-          to: busData.to,
-          busno: busData.busno,
-          busname: busData.busname,
-          fare: busData.fare,
-          type: busData.type,
-          NoOfSeats: busData.NoOfSeats,
-          button: busData.button,
-        },
-      ];
-    }
+    let busData = this.props.busData;
 
-    return (
-      <>
-        <Menu />
-        <Table
-          columns={columns}
-          data={getBusdata}
-          bookticket={bookTicket.bind(this)}
-        />
-      </>
-    );
+    if (sessionStorage.getItem("busDetails")) {
+      storedBusdata = JSON.parse(sessionStorage.getItem("busDetails"));
+      if (sessionStorage.getItem("busdetails")) {
+        getBusdata = [
+          {
+            from: storedBusdata.from,
+            to: storedBusdata.to,
+            busno: storedBusdata.busno,
+            busname: storedBusdata.busname,
+            fare: storedBusdata.fare,
+            type: storedBusdata.type,
+            NoOfSeats: storedBusdata.NoOfSeats,
+            button: storedBusdata.button,
+          },
+        ];
+      } else {
+        getBusdata = [
+          {
+            from: busData.from,
+            to: busData.to,
+            busno: busData.busno,
+            busname: busData.busname,
+            fare: busData.fare,
+            type: busData.type,
+            NoOfSeats: busData.NoOfSeats,
+            button: busData.button,
+          },
+        ];
+      }
+
+      return (
+        <>
+          <Menu />
+          <Table
+            columns={columns}
+            data={getBusdata}
+            bookticket={bookTicket.bind(this)}
+          />
+        </>
+      );
+    }
   }
 }
 export default withRouter(TableData);

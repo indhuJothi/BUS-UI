@@ -1,6 +1,5 @@
 import React from "react";
 import { userContext } from "../../context/Context";
-import data from "../../resources/user.json";
 import logo from "../../resources/signlogo.jpg";
 import "./userprofile.css";
 import Menu from "../../common/menu/Menu";
@@ -49,6 +48,7 @@ class Profile extends React.Component {
       isinputShow: false,
       changePassword: false,
     });
+    sessionStorage.user= this.state.name===""?this.state.userData.name:this.state.name
     const data ={
     
       name : this.state.name===""?this.state.userData.name:this.state.name,
@@ -174,40 +174,7 @@ class Profile extends React.Component {
                   </div>
                 )}
               </div>
-              {isupdateData
-                ? null
-                : data.user.filter((element) => {
-                   
-                    if (element.name === userName) {
-                      if (
-                        this.state.name !== "" &&
-                        this.state.name !== userName
-                      ) {
-                        element.name = this.state.name;
-                        localStorage.name = this.state.name;
-                        contextValue.username = this.state.name;
-                      }
-                      if (
-                        this.state.email !== "" &&
-                        this.state.email !== userEmail
-                      ) {
-                        element.email = this.state.email;
-                        localStorage.email = this.state.email;
-                        contextValue.email = this.state.email;
-                      }
-                      if (
-                        this.state.mobile !== userMobile &&
-                        this.state.mobile !== ""
-                      ) {
-                        element.mobile = this.state.mobile;
-                        localStorage.mobile = this.state.mobile;
-                        contextValue.mobile = this.state.mobile;
-                      }
-
-                    }
-
-                  })}
-
+            
               <div class="updatedetails">
                 {isinputShow ? (
                   <input

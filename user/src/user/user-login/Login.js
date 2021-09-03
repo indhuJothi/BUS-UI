@@ -57,59 +57,53 @@ class Login extends React.Component {
     let mobileResult,passwordResult
     let mobileRegex = /^[6-9]\d{9}$/;
     let passRegex = /^[A-Za-z0-9@\s]{3,15}$/;
-    result = validateLogin(this.state.mobile, this.state.password);
-    name = getUsername(this.state.mobile);
-    password = getPassword(this.state.mobile, this.state.password);
-    email = getUseremail(this.state.mobile);
-    if (result) {
-      this.setState({
-        // search: true,
-        userName:name,
-        userEmail:email
-      });
-     
-      localStorage.setItem("name", name);
-    }
-    localStorage.setItem("mobile", this.state.mobile);
-    localStorage.setItem("email", email);
-    sessionStorage.setItem("password", this.state.password);
+ 
     if (passRegex.test(this.state.password)) {
       this.setState({
         passErr: "",
+        gotoRegister:""
       });
       passwordResult=false
     }
     else{
       passwordResult=true
       this.setState({
-        passErr:"Enter a valid password"
+        passErr:"Please Enter a valid password",
+        gotoRegister:""
       })
     }
-    mobile = getMobile(this.state.mobile, this.state.password);
     if (mobileRegex.test(this.state.mobile)) {
       mobileResult = false
       this.setState({
         mobileErr: "",
+        gotoRegister:""
       });
     }
     else{
       mobileResult=true
       this.setState({
-        mobileErr:"Enter a valid mobile number"
+        mobileErr:"Please Enter a valid mobile number",
+        gotoRegister:""
       })
     }
     let newUserDetails = {
       mobile:parseInt(this.state.mobile),
       password: this.state.password,
     };
-    if((mobileResult)||(passwordResult)===false){
+     let data
+    if((mobileResult ===false) && (passwordResult===false))
+    {
      this.loginUser(newUserDetails)
-      .then((response) => response.data)
+      .then((response) => data=response.data)
       .then((data) => {
-        let { token } = data;
+        let token  = data.token;
+        let user = data.user
+       
         if(data !=="error" && data!=="Not found")
         {
+          console.log(data.user)
         sessionStorage.setItem("authToken", token);
+        sessionStorage.setItem("user",user)
          this.setState({
            search:true,
            mobileErr:"",
@@ -127,8 +121,9 @@ class Login extends React.Component {
         }
         else {
           this.setState({
-            mobileErr:"Please a valid mobile number",
-            passErr:"Please enter a valid password"
+            mobileErr:"",
+            passErr:"Please enter a valid password",
+            gotoRegister:""
           })
         }
      

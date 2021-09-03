@@ -9,12 +9,16 @@ export default baseUrl= axios.create({
 
 export function userAuthenticated()
 {
-    return baseUrl.get('http://localhost:5000/users/userdetails',{
+    return baseUrl.get('/users/userdetails',{
         headers:{
             "access-token":sessionStorage.getItem("authToken")
         }
     })
     
 }
+
+
+
+
 
 

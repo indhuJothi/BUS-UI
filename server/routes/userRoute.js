@@ -4,11 +4,13 @@ const user = require("../model/user");
 const bus = require("../model/bus");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const cities = require('../model/cities')
+
 
 router.post("/register", async (req, res, next) => {
   let { name, email, mobile, password } = req.body;
   const userExsist = await user.findOne({ mobile: mobile });
-  const salt = await bcrypt.genSalt(10);
+  const salt = 10;
   const hashPassword = await bcrypt.hash(password, salt);
   password = hashPassword;
   if (userExsist) {
@@ -28,7 +30,7 @@ router.post("/register", async (req, res, next) => {
   }
 });
 
-router.post("/login", async (req, res, next) => {
+router.post("/login", async (req, res) => {
   const { mobile, password } = req.body;
   const userAuth = await user.findOne({ mobile: mobile });
   if (userAuth) {
@@ -42,9 +44,10 @@ router.post("/login", async (req, res, next) => {
             (err, token) => {
               res.json({
                 token: token,
+                user:userAuth.name
               });
               res.status(200);
-              res.send(token);
+             
             }
           );
         } else {
@@ -76,7 +79,6 @@ router.put("/updateuser", verifyToken, (req, res) => {
       res.send("error");
     } else {
       res.send("Updated successfully");
-      console.log("updated");
     }
   });
 });
@@ -89,14 +91,13 @@ router.put("/updatepassword", verifyToken, async (req, res) => {
       if (result) {
         let salt = 10;
         let hashPassword = await bcrypt.hash(password, salt);
-        console.log(hashPassword);
         let newData = { $set: { password: hashPassword } };
         user.updateOne({ _id: req._id }, newData, (err, respond) => {
           if (err) {
             res.send("error");
           } else {
             res.send("Updated successfully");
-            console.log("updated");
+          
           }
         });
       } else {
@@ -126,12 +127,93 @@ function verifyToken(req, res, next) {
 
 router.post("/search", async (req, res, next) => {
   const { from, to } = req.body;
-  const busExsist = await bus.find({ from: from, to: to });
-  console.log(busExsist);
+  const busExsist = await bus.findOne({ from: from, to: to });
   if (busExsist) {
     res.status(200);
     res.send(busExsist);
   }
+  else{
+    res.send("error")
+
+  }
 });
+
+ router.post('/updatehistory',verifyToken,async (req,res)=>{
+   const {busdata} = req.body
+  
+  user.findOne({ _id: req._id }).then((response) => {
+    if(response)
+    {
+    var historyDatas =  { $addToSet: {busDetails:busdata} }
+    user.updateOne({ _id: req._id },historyDatas, (err, respond) => {
+      if (err) {
+        res.send("error");
+      } else {
+        res.send("Updated successfully");
+        
+      }
+    });
+  }
+  })
+
+ })
+
+
+ router.get("/getuserhistory", verifyToken, (req, res) => {
+
+  user.findOne({ _id: req._id }).then((response) => { 
+    res.send(response.busDetails);   
+  });
+});
+
+
+router.put('/updateseatcount',verifyToken,(req,res)=>{
+  const {count,busnum} = req.body
+  let num = parseInt(count)
+  user.findOne({_id:req._id}).then(response=>{
+    if(response)
+    {
+      
+        bus.findOne({busno:busnum}).then(response=>{
+        if(response){
+          console.log(response)
+          let reduceCount = response.NoOfSeats - num
+          bus.updateOne({busno:busnum},{$set:{NoOfSeats:reduceCount}}, (err) => {
+            if (err) {
+              
+              res.send("error");
+            } else {
+              res.send("Updated successfully");
+              
+            }
+          });
+
+        }
+      })
+    }
+  })
+  
+})
+
+
+router.get('/getcities',verifyToken,(req,res)=>{
+  user.findOne({_id:req._id}).then(response=>{
+    if(response)
+    {
+      cities.find({},(err,result)=>{
+        if(err)
+        {
+          res.send("error")
+        }
+        else{
+          res.send(result)
+        }
+        
+      })
+      
+    }
+  })
+})
+
 
 module.exports = router;

@@ -10,19 +10,19 @@ class Header extends React.Component {
     {
       this.state={
         profile:false,
-        userData:[],
+        // userData:[],
         logOut:false
       }
     }
   }
-  componentDidMount(){
-    userAuthenticated().then((response)=>{
-      this.setState({
-        userData:response.data
-      })
+  // componentDidMount(){
+  //   userAuthenticated().then((response)=>{
+  //     this.setState({
+  //       userData:response.data
+  //     })
       
-   })
-  }
+  //  })
+  // }
   setprofile()
   {
     this.setState({
@@ -44,7 +44,7 @@ class Header extends React.Component {
         
         {sessionStorage.getItem("authToken") && (
           <a class="logobut">
-            <span class="username">{this.state.userData.name}</span>
+            <span class="username">{sessionStorage.getItem("user")}</span>
             <span class="pro" onClick={(e) => this.setprofile()}>
               Profile
             </span>

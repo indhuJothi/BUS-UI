@@ -5,12 +5,17 @@ import "./userHistory.css";
 import { getBushistory } from "../../service/service";
 import Header from "../../common/header/Header";
 import Menu from "../../common/menu/Menu";
+import getuserHistory from '../../service/api'
+import axios from 'axios'
+
 
 let columns = [
-  {
-    heading: "UserId",
-    property: "id",
-  },
+  // {
+  //   heading:"User Id",
+  //   property:"id"
+
+  // },
+ 
   {
     heading: "Mobile",
     property: "mobile",
@@ -52,6 +57,7 @@ class HistoryTable extends React.Component {
     {
       this.state = {
         go: false,
+        history:[]
       };
     }
     
@@ -61,11 +67,27 @@ class HistoryTable extends React.Component {
       go: true,
     });
   }
+  
+
+  componentDidMount(){
+    axios.get("http://localhost:5000/users/getuserhistory",{
+      headers:{
+        "access-token":sessionStorage.getItem("authToken")
+      }
+    }).then(response=>{
+     
+      this.setState({
+        history:response.data
+      })
+    })
+  }
+
+
 
   render() {
-    let data = getBushistory();
+  
     let go = this.state.go;
-    let datalist = [...data].reverse();
+    let datalist = [...this.state.history].reverse()
     return (
       <>
         <Header />

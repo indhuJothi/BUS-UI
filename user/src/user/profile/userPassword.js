@@ -87,6 +87,8 @@ class ChangePassword extends React.Component {
 
   hideAlert() {
     sessionStorage.removeItem("authToken");
+    sessionStorage.removeItem("user")
+    
     this.props.history.push("/");
     this.setState({
       alert: null,
