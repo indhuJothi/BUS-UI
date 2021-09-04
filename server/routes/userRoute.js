@@ -5,6 +5,7 @@ const bus = require("../model/bus");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const cities = require('../model/cities')
+const seatsAvailability = require("../model/seatAvailability");
 
 
 router.post("/register", async (req, res, next) => {
@@ -195,8 +196,41 @@ router.put('/updateseatcount',verifyToken,(req,res)=>{
   
 })
 
+router.post('/bookedseats',verifyToken,(req,res)=>{
+  console.log("I get a token")
+  //  console.log(req.body)
+   const busdetails = req.body
+   const {busno,seatsCount,date,bookedSeats} = req.body
+   console.log(busdetails.bookedseats.bookedSeats)
+  user.findOne({ _id: req._id }).then((response) => {
+    if(response)
+    {
+      seatsAvailability.find({date:busdetails.bookedseats.date}).then(response=>{
+        console.log(response)
+        if(response)
+        {
+          let updateSeats = parseInt(response.noOfSeats) + parseInt(busdetails.bookedseats.bookedSeats)
+          console.log(updateSeats)
+          seatsAvailability.updateOne({busno:busdetails.bookedseats.busno},
+            {$set:{noOfSeats:busdetails.bookedseats.seatsCount}},(err,result)=>{
+              res.send("Sucess")
+            })
+        }
+      })
+      // seatsAvailability.insertMany({
+      //   busno:busdetails.bookedseats.busno,
+      //   noOfSeats:busdetails.bookedseats.seatsCount,
+      //   date:busdetails.bookedseats.date
+  
+      // }).then(result=>{
+      //   console.log('successfully')
+      // })
+    }
+  })
+})
 
 router.get('/getcities',verifyToken,(req,res)=>{
+  console.log('getCities')
   user.findOne({_id:req._id}).then(response=>{
     if(response)
     {
@@ -209,11 +243,10 @@ router.get('/getcities',verifyToken,(req,res)=>{
           res.send(result)
         }
         
-      })
-      
-    }
-  })
+      })}
+   })
 })
+
 
 
 module.exports = router;

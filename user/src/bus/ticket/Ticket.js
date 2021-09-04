@@ -7,6 +7,7 @@ import Header from "../../common/header/Header";
 import userdata from '../../resources/userhistory.json'
 import { userAuthenticated } from "../../service/api";
 import axios from 'axios'
+// import baseURL from '../../service/api'
 
 
 
@@ -51,18 +52,38 @@ class Ticket extends React.Component {
     this.setState({
       isbool: false,
     });
-    this.props.history.push('/user-history')
-    this.updatehistory(bushistoryPushDetails)
-    axios.put('http://localhost:5000/users/updateseatcount',
-       {count:sessionStorage.getItem("seatcount"),
-         busnum:busDetails.busno
-        },
-         {
+    
+    let bookedseats ={
+    busno:busDetails.busno,
+    date:busDetails.date,
+    seatsCount:sessionStorage.getItem("seatcount"),
+    
+  }
+    axios.post('http://localhost:5000/users/bookedseats',
+    {
+     bookedseats
+    },
+     {
       headers:{
         "Content-type":"application/json",
         "access-token":sessionStorage.getItem("authToken")
       }
     })
+    this.props.history.push('/user-history')
+ 
+    this.updatehistory(bushistoryPushDetails)
+    // axios.put('http://localhost:5000/users/updateseatcount',
+    //    {count:sessionStorage.getItem("seatcount"),
+    //      busnum:busDetails.busno
+    //     },
+    //      {
+    //   headers:{
+    //     "Content-type":"application/json",
+    //     "access-token":sessionStorage.getItem("authToken")
+    //   }
+    // })
+
+   
    
   }
 
